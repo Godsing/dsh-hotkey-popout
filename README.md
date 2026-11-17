@@ -1,6 +1,6 @@
 # DeepSeek Harness 悬浮窗插件（`@local/dsh-hotkey-popout`）
 
-**English** | 简体中文
+**[English](README.en.md)** | 简体中文
 
 在 Mac 上用**一个快捷键**，从任何 App 里唤出 DeepSeek Harness 的悬浮对话窗。
 
