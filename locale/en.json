@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Hotkey Popout",
+    "description": "Summon a floating chat panel from anywhere with a global hotkey (Option+Space by default), with project, mode, permission, and model pickers."
+  }
+}

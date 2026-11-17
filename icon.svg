@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="Hotkey Popout">
+  <defs>
+    <linearGradient id="hp-card" x1="10" y1="10" x2="54" y2="46" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#4a8cff"/>
+      <stop offset="1" stop-color="#1f5fd0"/>
+    </linearGradient>
+    <linearGradient id="hp-key" x1="18" y1="42" x2="46" y2="56" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#dfe9ff"/>
+    </linearGradient>
+  </defs>
+  <rect x="7" y="8" width="50" height="34" rx="9" fill="url(#hp-card)"/>
+  <rect x="7" y="8" width="50" height="34" rx="9" fill="none" stroke="#0b2d6b" stroke-opacity=".35"/>
+  <path d="M18 21.5h28M18 28h18" stroke="#eaf2ff" stroke-width="3.4" stroke-linecap="round"/>
+  <rect x="15" y="40" width="34" height="17" rx="5" fill="url(#hp-key)" stroke="#0b2d6b" stroke-opacity=".22"/>
+  <path d="M24 48.5h16" stroke="#2a63cf" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="49" cy="15" r="4.5" fill="#ffd166" stroke="#0b2d6b" stroke-opacity=".18"/>
+</svg>

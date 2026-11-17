@@ -1,0 +1,11 @@
+# dsh-hotkey-popout: a global-hotkey floating chat panel.
+# The Host row owns the macOS hotkey helper and the panel's HTTP surface; the
+# Client half registers the overlay seat.
+- insert:
+    - id: hotkey-popout
+      name: '@local/dsh-hotkey-popout'
+      config:
+        hotkey: Option+Space
+        idleMinutes: 10
+        focusOnHotkey: true
+        globalHotkey: true
