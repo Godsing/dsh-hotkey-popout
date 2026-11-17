@@ -6,7 +6,10 @@
 
 按 **⌥ Space** → 窗口出现在**鼠标所在的那块屏幕**上，浮在当前 App 之上；再按一次、按 `Esc`、点击别的 App 或切换窗口，它就消失。
 
-![悬浮窗](assets/popout.png)
+<p align="center">
+  <a href="assets/popout.png"><img src="assets/popout.png" height="200" alt="悬浮窗（窄）"></a>
+  <a href="assets/popout-wide.png"><img src="assets/popout-wide.png" height="200" alt="悬浮窗（宽）"></a>
+</p>
 
 ## 功能
 
@@ -99,7 +102,7 @@ native/hotkey-helper.swift   macOS 全局热键 + 悬浮窗（源码，唯一事
 bin/                         生成的 helper 二进制（已 gitignore，按需编译）
 locale/{en,zh}.json          插件名称与描述
 icon.svg                     插件图标
-assets/popout.png            README 截图
+assets/popout*.png           README 截图（点击可看原图）
 ```
 
 ## License

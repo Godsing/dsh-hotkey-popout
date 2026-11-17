@@ -9,7 +9,10 @@ Press **⌥ Space** → the window opens **on the screen your pointer is on**, o
 whatever app is in front. Press it again, press `Esc`, click another app, or
 switch windows → it disappears.
 
-![Popout](assets/popout.png)
+<p align="center">
+  <a href="assets/popout.png"><img src="assets/popout.png" height="200" alt="Popout, narrow window"></a>
+  <a href="assets/popout-wide.png"><img src="assets/popout-wide.png" height="200" alt="Popout, wide window"></a>
+</p>
 
 ## Behaviour
 
@@ -156,7 +159,7 @@ native/hotkey-helper.swift   macOS hotkey + floating window (source of truth)
 bin/                         Generated helper binaries (gitignored; built on demand)
 locale/{en,zh}.json          Plugin title and description
 icon.svg                     Plugin icon
-assets/popout.png            README screenshot
+assets/popout*.png           README screenshots (click for full size)
 ```
 
 ## License
