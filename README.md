@@ -1,180 +1,107 @@
-# Hotkey Popout (`@local/dsh-hotkey-popout`)
+# DeepSeek Harness 悬浮窗插件（`@local/dsh-hotkey-popout`）
 
-A DeepSeek Harness plugin that puts a floating chat panel one keystroke away,
-from **any** app on the Mac.
+**English** | 简体中文
 
-Press **⌥ Space** anywhere → a floating card opens **on the screen your pointer
-is on**, over whatever app is in front. Press it again, press `Esc`, click
-another app, or switch windows → it disappears.
+在 Mac 上用**一个快捷键**，从任何 App 里唤出 DeepSeek Harness 的悬浮对话窗。
 
-```
-┌──────────────────────────────────────────────────────────────┐
-│  📁 BetterAI      ✦ standard            新会话    +      ✕    │  project · mode
-├──────────────────────────────────────────────────────────────┤
-│  YOU                                                          │
-│      把刚才那个插件的测试补上                                   │
-│  ASSISTANT                                                    │
-│      好的，我先看一下现有的测试结构……                           │
-│  [ Read ] src/…/client.ts                     done            │
-├──────────────────────────────────────────────────────────────┤
-│  输入任何问题…                                                 │
-│  +   🛡 danger-full-access          ⚙ DeepSeek-V4.1-Flash  ↑  │  attach · permission · model · send
-└──────────────────────────────────────────────────────────────┘
-```
+按 **⌥ Space** → 窗口出现在**鼠标所在的那块屏幕**上，浮在当前 App 之上；再按一次、按 `Esc`、点击别的 App 或切换窗口，它就消失。
 
-## Behaviour
+![悬浮窗](assets/popout.png)
 
-| Action | Result |
+## 功能
+
+| 操作 | 效果 |
 | --- | --- |
-| `⌥ Space` (system-wide) | Show the floating panel on the screen with the mouse |
-| `⌥ Space` again / `Esc` / click another app | Hide it |
-| `⌘ N` while the window is focused | Start a new session (the app itself binds `⌥⌘N`) |
-| `⌘ W` while the window is focused | Hide the popout |
-| Hidden for ≥ `idleMinutes` (default 10) | The next summon starts a fresh session; the old conversation stays in the sidebar |
-| Drag the top edge | Move the window; its **position** is remembered per display |
-| Drag any edge or corner | Resize (minimum 360×320); the **size is shared** by every display |
-| 📌 in the session header (left of the session menu) or `⌘⇧P` | Pin the window: it stops hiding on focus loss, so it can sit beside the main window |
-| `Enter` / `Shift+Enter` | Send / newline |
+| `⌥ Space`（系统全局） | 在鼠标所在屏幕唤出悬浮窗 |
+| 再按 `⌥ Space` / `Esc` / 点击其他 App | 隐藏 |
+| 聚焦窗口时 `⌘ N` | 新建会话（App 自身绑定的是 `⌥⌘N`） |
+| 聚焦窗口时 `⌘ W` | 隐藏悬浮窗 |
+| 隐藏时长 ≥ `idleMinutes`（默认 10 分钟） | 下次唤出自动新建会话，旧会话仍留在侧边栏 |
+| 拖动顶部 | 移动窗口，**位置按屏幕分别记忆** |
+| 拖动任意边或角 | 缩放（最小 360×320），**尺寸所有屏幕共用** |
+| 会话标题栏的 📌（会话菜单左边）或 `⌘⇧P` | 固定窗口：失焦不再隐藏，可与主窗口并排使用 |
+| `Enter` / `Shift+Enter` | 发送 / 换行 |
 
-The idle clock starts when the panel is hidden, not when the last message was
-sent: summon it at 09:00, hide it at 09:08, and it still restores that
-conversation any time before 09:18. A session that never got a message is
-simply reused instead of replaced.
+**闲置计时从「隐藏」开始算**，不是从最后一条消息算：09:00 唤出、09:08 隐藏，那么 09:18 之前再唤出，仍然恢复那段对话；一次都没发过消息的会话会被直接复用，不会浪费一个新会话。
 
-Sessions the panel creates show up in the normal sidebar, so a conversation
-started here continues in the main window like any other.
+**项目记忆**只跟随悬浮窗自己的对话：隐藏时读「这个窗口当前打开的是哪条会话」，记住它的项目；主窗口的活动不会影响它。
 
-## Configuration
+窗口里渲染的就是 Harness 本体，所以 Markdown、工具调用卡片、审批、plan 模式、附件、斜杠命令、模型/权限选择器全都是原生的。悬浮窗创建的会话会出现在侧边栏，可以回到主窗口继续聊。
 
-Override in the profile patch (`~/.dsh/profiles/<profile>/cordis.patch.yml`) or
-in this package's `cordis.patch.yml`:
+## 配置
+
+在 profile 补丁（`~/.dsh/profiles/<profile>/cordis.patch.yml`）或本包的 `cordis.patch.yml` 中覆盖：
 
 ```yaml
 - id: hotkey-popout
   name: '@local/dsh-hotkey-popout'
   config:
-    hotkey: Option+Space   # Cmd+Shift+K, Ctrl+Alt+J, F13 … (modifiers + one key)
-    idleMinutes: 10        # 0 disables the auto-new-session rule
-    nativeWindow: true     # false falls back to the in-app overlay
-    windowSize: 920x720    # initial floating window size in points
+    hotkey: Option+Space   # 例如 Cmd+Shift+K、Ctrl+Alt+J、F13（修饰键 + 一个按键）
+    idleMinutes: 10        # 0 表示关闭「闲置自动新会话」
+    nativeWindow: true     # false 表示不启用悬浮窗（插件将不起作用）
+    windowSize: 920x720    # 悬浮窗初始尺寸（pt）
     globalHotkey: true
-    helperPath: ''         # optional explicit path to the native helper
+    helperPath: ''         # 可选：自定义 helper 可执行文件路径
 ```
 
-Invalid or missing values fall back to the defaults. The **Settings → General → New session after idling** row edits `idleMinutes`
-through `POST /hotkey-popout/settings`, which persists it to
-`~/.dsh/hotkey-popout.json`.
+非法或缺失的值会回退到默认值。**设置 → 通用 → 闲置后新会话** 也可以改 `idleMinutes`，写入 `~/.dsh/hotkey-popout.json`，立即生效。
 
-## Architecture
+## 工作原理
 
-Two halves, plus a small native helper.
+两部分 + 一个小的原生 helper。
 
-* **`native/hotkey-helper.swift`** — a single AppKit process that owns both
-  pieces of the native experience:
+* **`native/hotkey-helper.swift`** —— 一个 AppKit 进程，负责原生体验的两块：
 
-  * it registers the Carbon hotkey (`RegisterEventHotKey`), which needs **no
-    Accessibility or Input Monitoring permission** and fires while another app
-    is frontmost;
-  * it hosts a transparent, borderless `NSPanel` with a `WKWebView` that renders
-    the Harness Web app in *window mode*. The panel is pre-warmed while hidden
-    (so the first summon is instant), joins all Spaces (so it appears over
-    full-screen apps), sits on the screen holding the mouse pointer, is dragged
-    by its top strip, and hides itself when the app loses focus.
+  * 注册 Carbon 全局热键（`RegisterEventHotKey`），**不需要辅助功能/输入监控权限**，在其他 App 前台时也能触发；
+  * 托管一个透明无边框的 `NSPanel`，里面是 `WKWebView`，以 *窗口模式* 渲染 Harness Web 应用。窗口在隐藏时预先加载（首次唤出即可见）、加入所有 Space（可覆盖全屏 App）、跟随鼠标所在屏幕、支持顶部拖拽和四边缩放、失焦自动隐藏。
 
-  The Swift source is authoritative: the Host reuses `bin/dsh-hotkey-helper-<arch>`
-  only while it is at least as new as `native/hotkey-helper.swift`, and otherwise
-  builds with `xcrun swiftc` into `~/Library/Caches/dsh-hotkey-popout/` (which
-  keeps working when the package directory is read-only), falling back to `bin/`.
-  Building needs the Xcode command line tools and takes ~2 s; the result is
-  cached, so it happens once per source revision.
+  **Swift 源码是唯一事实来源**：只有当 `bin/dsh-hotkey-helper-<arch>` 比源码新时才会复用，否则用 `xcrun swiftc` 编译到 `~/Library/Caches/dsh-hotkey-popout/`（包目录只读时也能用），失败再回退到 `bin/`。编译需要 Xcode 命令行工具，约 2 秒，结果按源码版本缓存。
 
-  The window is a normal titled (titlebar-hidden) resizable panel: the top strip
-  drags it, the edges and corners resize it, and both are persisted.
+* **`index.js`（Host）** —— 负责 helper 进程与它的 JSON 行协议，并提供窗口所需的接口：
 
-* **`index.js` (Host)** — owns the helper process and its JSON-line protocol,
-  and serves the panel. The helper is started only once the web server is
-  listening, because the floating window needs the app's authenticated URL:
-  the start is retried for up to a minute on a cold boot, and if the URL still
-  is not available the helper starts without a window (overlay fallback) and
-  upgrades itself as soon as the URL appears. `state.helper.windowError` reports
-  why a window was not used.
+  * `GET /hotkey-popout/state` —— 配置、helper 状态、项目、agent preset、权限 preset；
+  * `GET /hotkey-popout/wait?since=N` —— 长轮询；helper 一按键，挂起的请求立刻返回（流式响应会被服务的 gzip 中间件缓冲，所以用轮询）；
+  * `GET /hotkey-popout/ping` —— 序列号，供兜底轮询；
+  * `POST /hotkey-popout/trigger` —— `toggle-window` / `show-window` / `hide-window` / `reload-window`，或直接 toggle（用于测试与窗口按钮）；
+  * `POST /hotkey-popout/settings` —— 写入 `idleMinutes`；
+  * `/hotkey-popout/client-log` —— 面板上报的信标，用于无浏览器控制台时核验渲染。
 
-  * `GET /hotkey-popout/state` — config, helper status, projects, agent presets,
-    permission presets;
-  * `GET /hotkey-popout/wait?since=N` — long poll; a held request completes the
-    instant the helper reports a hotkey press (a streaming response would be
-    buffered by the server's gzip middleware, which is why this is a poll);
-  * `GET /hotkey-popout/ping` — sequence head, for the fallback poll;
-  * `POST /hotkey-popout/trigger` — `toggle-window`, `show-window`,
-    `hide-window`, `reload-window`, or a bare toggle (tests and the panel's own
-    buttons);
-  * `/hotkey-popout/client-log` — beacons from the panel, used to verify
-    rendering without a browser console.
+  helper 只在 web server 开始监听后才启动，因为悬浮窗需要 App 的认证 URL：冷启动会重试最多一分钟；若仍拿不到，helper 以「无窗口」方式启动，并在 URL 出现后自动升级。原因会写在 `state.helper.windowError` 里。
 
-* **`client.js` (Client)** — two modes:
+* **`client.js`（Client）** —— 只有一条路径：悬浮窗页面里驱动真实 App 的导航（`uiWorkspace.openSession` / `startSession`），在主窗口里注册「闲置后新会话」设置项和 helper 不可用时的红字提示。旧的自绘卡片已移除，所以没有 helper 时插件不显示任何界面。
 
-  * **Window mode** (macOS default): the floating window renders the *real*
-    Harness app, so Markdown, tool cards, approvals, plan mode, attachments,
-    slash commands and the app's own model/permission pickers all come for
-    free. The plugin only drives navigation: on show it restores the last
-    conversation (`uiWorkspace.openSession`) or starts a new one
-    (`uiWorkspace.startSession`) when the idle clock expired. The sidebar is
-    left entirely to the app — DSH 0.2.2 collapses it to an overlay drawer by
-    itself, and toggling it from the plugin used to close the drawer right
-    after the user opened it.
-  * There is no second UI: the old self-drawn card was removed, so a profile
-    without the native helper simply shows nothing.
+### 为什么需要原生 helper
 
-  Both share the Host's settings (`appearance`, `idleMinutes`) and the same
-  session semantics.
+DSH 的 Host 以纯 Node 方式运行（`ELECTRON_RUN_AS_NODE=1`）在 Electron 主进程下，插件拿不到 `globalShortcut` 和 `BrowserWindow`。一个独立的 AppKit 进程是用最小代价同时拿到**真正的系统级快捷键**和**可漂浮于任意 Space 的真实窗口**的方式。
 
-### Why a native helper
+## 窗口行为
 
-The DSH Host runs as plain Node (`ELECTRON_RUN_AS_NODE=1`) under the Electron
-main process, so `globalShortcut` and `BrowserWindow` are not reachable from a
-plugin. A separate AppKit process is the smallest mechanism that yields a real
-system-wide shortcut *and* a real window that can float on any Space.
+窗口显示的是 Harness 自己的外观，所以深浅色由 App 的设置决定。
 
-## Visual behaviour
+窗口几何存在 `UserDefaults`：`dshp.window.frames` 每个显示器只存原点，`dshp.window.size` 存一份所有屏幕共用的尺寸。于是副屏上拖到的位置会记住，而缩放一次后在任何屏幕都以这个大小打开。
 
-In window mode the window shows the Harness app's own appearance, so the
-`appearance` setting applies to the overlay fallback only. In that fallback the
-card is opaque and follows `appearance` (system by default), and its pickers
-open upward from the composer so long lists never get clipped.
+## 限制
 
-Window geometry lives in `UserDefaults`: `dshp.window.frames` stores only an
-origin per display id, while `dshp.window.size` stores one size for every
-display. So a window dragged on the external monitor returns to that spot, and
-resizing it once applies wherever it next opens.
+* 仅支持 macOS。helper 不可用时（其他平台、没装 Xcode 命令行工具、编译失败）插件不渲染任何东西，**设置 → 通用** 会显示红字说明原因和需要执行的编译命令。
+* 窗口是第二份 WebKit 页面，会多占一份内存；已预先加载，首次唤出仍需等页面首次加载（插件启动后约 2 秒）。
+* 原生 helper 在本机编译，需要 Xcode 命令行工具。
+* helper 聚焦时会作为一个 accessory 应用出现在菜单栏，名字是 `dsh-hotkey-helper-arm64`。
+* 安装或更新 Client 部分后，需刷新一次 App 窗口（`⌘ R`），设置项才会加载。
+* 悬浮窗是 Web 应用的第二份渲染，它在 WebView 的 `localStorage` 里维护自己的会话 id。
 
-## Limits
-
-* The floating window is macOS-only. Without a working helper (another platform,
-  no Xcode command line tools, or a failed build) the plugin renders nothing;
-  **Settings → General** then shows a red line with the reason and the build
-  command to run.
-* The window renders the Web app in a second WebKit process, so it costs one
-  extra page in memory. It is pre-warmed; the first summon still waits for the
-  page's first load (~2 s after the plugin starts).
-* The native helper is compiled on the user's machine unless `bin/` ships a
-  binary newer than the Swift source. Without the Xcode command line tools that
-  build fails, and the plugin then has no window and no hotkey.
-* The helper appears as its own accessory app while focused, so the menu bar
-  briefly names `dsh-hotkey-helper-arm64`.
-* After installing or changing the Client half, reload the app window once
-  (`⌘ R`) so the settings row picks up the new bundle; the floating window
-  reloads with the helper.
-* The floating window is a second render of the Web app: it keeps its own
-  session id in `localStorage` inside the WebView.
-
-## Files
+## 文件
 
 ```
-index.js                     Host plugin: helper lifecycle, routes, catalogs
-client.js                    Client plugin: settings row, session summon, pin, shortcuts
-cordis.patch.yml             Bundle patch inserting the plugin row
-native/hotkey-helper.swift   macOS hotkey + floating window (source of truth)
-bin/                         Generated helper binaries (gitignored; built on demand)
-locale/{en,zh}.json          Plugin title and description
-icon.svg                     Plugin icon
+index.js                     Host 插件：helper 生命周期、路由、目录数据
+client.js                    Client 插件：设置项、会话唤起、固定、快捷键
+cordis.patch.yml             Bundle 补丁，插入插件行
+native/hotkey-helper.swift   macOS 全局热键 + 悬浮窗（源码，唯一事实来源）
+bin/                         生成的 helper 二进制（已 gitignore，按需编译）
+locale/{en,zh}.json          插件名称与描述
+icon.svg                     插件图标
+assets/popout.png            README 截图
 ```
+
+## License
+
+[MIT](LICENSE)
